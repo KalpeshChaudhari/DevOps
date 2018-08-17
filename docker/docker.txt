@@ -1,0 +1,53 @@
+To get inside container:
+	docker run -it --entrypoint /bin/sh YOUR_IMAGE
+
+To stop and remove all running containers
+	docker stop $(docker ps -aq)
+	docker rm $(docker ps -aq)
+
+To create docker swarm manager
+	docker swarm init --advertise-addr YOUR_IP_ADDR
+
+Redis Commands: 
+	docker run --name redis-one -d -p 6379:6379 redis	
+	docker exec -it redis-one sh
+	
+ELK Command:
+	docker pull docker.elastic.co/logstash/logstash:6.2.1
+	docker pull docker.elastic.co/logstash/logstash-oss:6.2.1	
+	
+	docker-machine ssh
+	sudo sysctl -w vm.max_map_count=262144
+
+	Starting full ELK stack:
+		docker pull sebp/elk
+		docker run -d -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk
+
+	Starting ELK stack seprately:
+		docker run --rm -d -it --name es -p 9200:9200 -p 9300:9300 -v "$PWD/esdata":/usr/share/elasticsearch/data elasticsearch
+		docker run --rm -d -it --name kibana --link es:elasticsearch -p 5601:5601 kibana 
+		docker run --rm -d -it --name logstash -p 5000:5000 -v "$PWD/Logback":/config-dir logstash -f /config-dir/logback.conf
+
+		docker run -d -it --name logstash -p 5000:5000 logstash -e 'input { tcp { port => 5000 codec => "json" } } output { elasticsearch { hosts => ["127.0.0.1"] index => "pre-%{indexName}"} }'
+		docker run -d -it --name logstash -p 5000:5000 logstash -e 'input { tcp { port => 5000 codec => "json" } } output { elasticsearch { hosts => ["127.0.0.1"] index => "pre-%{indexName}"} }'
+	
+	192.168.99.100:9200/_cat/indices?v&pretty
+	curl -XDELETE "http://elasticsearch:9200/index"
+
+	When logging in to the kibana pod in the kubernetes cluster, the entry point will show you an /bin directory, but it's the system level bin directory, not the one you want to install a plugin. To install a plugin (like x-pack), 
+	navigate to this directory instead: /usr/share/kibana and then run bin/kibana-plugin install x-pack. Also, it took about 20-30 min for my install to complete. Not sure if that normal...
+
+	docker run -d -it -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk -v "$PWD/esdata":/usr/share/elasticsearch/data -e 'input { tcp { port => 5000 codec => "json" } } output { elasticsearch { hosts => ["127.0.0.1"] index => "pre-%{indexName}"} }' sebp/elk
+	
+Screenshot:
+	sudo docker run --shm-size 1G --rm --user root -e ALLOW_EMPTY_PASSWORD=yes -v $PWD/bind:/screenshots alekzonder/puppeteer:latest  screenshot 'https://www.google.com' 1366x768	
+
+Neo4J:
+	docker run \
+    --publish=7474:7474 --publish=7687:7687 \
+    --volume=$HOME/neo4j/data:/data \
+    neo4j
+
+RabbitMQ:
+	docker run -d --hostname my-rabbit -p 15672:15672 -p 5672:5672 --name rabbit -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:3-management
+    	

@@ -1,0 +1,46 @@
+1) create pod
+	kubectl create -f pod.yaml
+
+2) get clusters
+	kubectl config get-clusters
+
+3) delete clusters
+	kubectl config delete-cluster <cluster-name>
+
+4) exposing the running pod
+ 	kubectl expose pod some-redis --name some-redis-6379 --type LoadBalancer --port 6379 --protocol TCP
+
+5) Connecting to a running Redis container
+	kubectl exec -it some-redis -- redis-cli 	
+
+6) setting up a cluster 
+	kubectl config set-cluster <cluster-name> --server=https://1.2.3.4	
+
+7) Set config maps
+
+8) Get congfig maps
+	kubectl get configmap <configmap-name> -o yaml	
+
+9) Set env variables for deployment as key value pair
+	kubectl set env deployment/<deployment-name> 'key=value'
+
+10) Set env variables for deployment from config map 
+	kubectl set env --from=configmap/<configmap-name> deployment/<deployment-name>
+
+11) Update ConfigMap or Secret without deleting the existing one
+	kubectl create configmap <configmap-name> --from-file foo.properties -o yaml --dry-run | kubectl replace -f -
+
+12) Edit deployments
+	KUBE_EDITOR=nano kubectl edit deployment <deployment-name>
+
+13) Delete configmap
+	kubectl delete configmap <configmap-name>
+
+14) Get deployment rollout status
+	kubectl rollout status deployment/<deployment-name>
+
+15) Pause deployment rollout
+	kubectl rollout pause deployment/<deployment-name>
+
+16) Resume deployment rollout
+	kubectl rollout Resume deployment/<deployment-name>

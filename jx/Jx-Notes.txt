@@ -1,0 +1,38 @@
+1) In jenkins x after creating a cluster, the builds to setup the env on jenkins fails due to the helm-client and helm-server version are different. So need to add on command in jenkinsfile before settign the env:
+	helm init --upgrade
+
+2) promote to environment
+	jx promote --version 0.0.1 --env production
+
+3) Get current cluster context
+	kubectl config current-context
+
+4) Check the project activity
+	jx get activity -f projectv1app -w
+
+5) Kubectl pods
+	gcloud container clusters get-credentials cranenova --zone asia-east1-a --project <project-name>  && kubectl get pods
+
+6) Change context
+	jx ctx <context-name>
+
+7) Grafana get password
+	kubectl get secret --namespace jx grafana -o jsonpath="{.data.admin-password}" | base64 --decode ;echo 
+
+8) Get podname 
+	export POD_NAME=$(kubectl get pods --namespace jx -l "app=grafana" -o jsonpath="{.items[0].metadata.name}")
+
+9) Forwarding port 3000 
+	kubectl --namespace jx port-forward $POD_NAME 3000
+
+10) Installing JX in current cluster
+	jx install
+
+11) Uninstalling JX from current cluster
+	jx uninstall
+
+12) Delete pipeline
+	jx delete app
+
+13) Remote shells: You can open a remote shell inside any pods container via the rsh command
+	jx rsh

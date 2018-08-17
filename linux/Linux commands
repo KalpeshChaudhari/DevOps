@@ -1,0 +1,9 @@
+1) install using deb package 
+	sudo dpkg -i /absolute/path/to/deb/file
+	sudo apt-get install -f
+
+2) untar 
+	tar -zxvf helm-v2.10.0-rc.1-darwin-amd64.tar.gz
+
+3) Kill process running on a port
+	sudo kill `sudo lsof -t -i:8090`	
